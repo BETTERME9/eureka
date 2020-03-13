@@ -3,11 +3,27 @@
          xmlns="http://java.sun.com/xml/ns/javaee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
-	http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+   http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+
+
+  <!--
+      最重要的东西，web应用启动的时候就会执行的，负责对web应用初始化的东西里面写一堆初始化的代码
+      EurekaBootStrap是在eureka core 里，负责eureka server初始话，
+  -->
   <listener>
     <listener-class>com.netflix.eureka.EurekaBootStrap</listener-class>
   </listener>
 
+  <!--
+    任何一个请求都会经过这些filter，这些filter会对每个请求都进行处理，这四个filter都是在eureka core里
+
+      StatusFilter：负责状态相关的逻辑处理
+      ServerRequestAuthFilter：对请求进行授权、认证处理相关逻辑
+      RateLimitingFilter：负责限流相关逻辑的（技术亮点）
+      GzipEncodingEnforcingFilter：压缩、编码相关逻辑
+  -->
+
+  <!--  负责状态相关的处理逻辑  -->
   <filter>
     <filter-name>statusFilter</filter-name>
     <filter-class>com.netflix.eureka.StatusFilter</filter-class>
@@ -26,9 +42,17 @@
     <filter-class>com.netflix.eureka.GzipEncodingEnforcingFilter</filter-class>
   </filter>
 
+
+
+
   <filter>
     <filter-name>jersey</filter-name>
+    <!--
+    这里的ServletContainer相当于spring mvc的DispatcherServlet（前端控制器），
+    接受所有的请求，作为请求的入口 ，处理之后，调用写的代码逻辑
+     -->
     <filter-class>com.sun.jersey.spi.container.servlet.ServletContainer</filter-class>
+    <!-- 挂载初始化相关东西-->
     <init-param>
       <param-name>com.sun.jersey.config.property.WebPageContentRegex</param-name>
       <param-value>/(flex|images|js|css|jsp)/.*</param-value>
@@ -49,6 +73,11 @@
     </init-param>
   </filter>
 
+
+  <!--
+   statusFilter、requestAuthFilter对所有请求都开放的
+   rateLimitingFilter（限流）默认不开启；
+   gzipEncodingEnforcingFilter对/v2/apps路径开放-->
   <filter-mapping>
     <filter-name>statusFilter</filter-name>
     <url-pattern>/*</url-pattern>
@@ -73,6 +102,7 @@
     <url-pattern>/v2/apps/*</url-pattern>
   </filter-mapping>
 
+  <!--  对所有请求都生效-->
   <filter-mapping>
     <filter-name>jersey</filter-name>
     <url-pattern>/*</url-pattern>
