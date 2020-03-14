@@ -41,7 +41,7 @@ import static org.mockito.Mockito.when;
 /**
  * Test REST layer of client/server communication. This test instantiates fully configured Jersey container,
  * which is essential to verifying content encoding/decoding with different format types (JSON vs XML, compressed vs
- * uncompressed).
+ * uncompressed).dwqdqw
  *
  * @author Tomasz Bak
  */
