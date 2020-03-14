@@ -8,7 +8,7 @@
 
   <!--
       最重要的东西，web应用启动的时候就会执行的，负责对web应用初始化的东西里面写一堆初始化的代码
-      EurekaBootStrap是在eureka core 里，负责eureka server初始话，
+      EurekaBootStrap是在eureka core 里，负责eureka server初始话，aaaaa
   -->
   <listener>
     <listener-class>com.netflix.eureka.EurekaBootStrap</listener-class>
